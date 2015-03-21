@@ -26,7 +26,7 @@ int main( int argc, char* argv[] ){
 		int blueVal = 0x00;
 		
 		//set background color
-		SDL_SetRenderDrawColor( renderer, 0xFF, 0xFF, 0xFF, 0xFF );
+		SDL_SetRenderDrawColor( renderer, 0x9f, 0xb6, 0xcd, 0xFF );
 		SDL_RenderClear( renderer );
 		//draw original circle
 		SDL_SetRenderDrawColor( renderer, redVal, greenVal, blueVal, 0xFF);
@@ -87,8 +87,8 @@ int main( int argc, char* argv[] ){
 							break;
 					}
 				
-					//SDL_SetRenderDrawColor( renderer, redVal, greenVal, blueVal, 0xFF);
-					drawCircle( renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT/2, SCREEN_HEIGHT / 8);
+					SDL_SetRenderDrawColor( renderer, redVal, greenVal, blueVal, 0xFF);
+					drawFilledCircle( renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT/2, SCREEN_HEIGHT / 8);
 					SDL_RenderPresent( renderer );
 					
 				}
