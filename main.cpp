@@ -11,6 +11,7 @@ bool init( SDL_Window* &window,  SDL_Renderer* &renderer );	//start SDL and crea
 void close( SDL_Window* &window, SDL_Renderer* &renderer);	//frees media and shuts down SDL
 void hexIncr(int & val);
 void drawCircle(SDL_Renderer* renderer, int x, int y, int radius);
+void drawFilledCircle(SDL_Renderer * renderer, int x, int y, int radius);
 
 int main( int argc, char* argv[] ){
 
@@ -31,10 +32,11 @@ int main( int argc, char* argv[] ){
 		SDL_SetRenderDrawColor( renderer, redVal, greenVal, blueVal, 0xFF);
 		
 		int vertBuffer = (SCREEN_WIDTH / 8) - (SCREEN_HEIGHT / 8);
-		drawCircle(renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8 + vertBuffer, SCREEN_HEIGHT / 8);
-		drawCircle(renderer, SCREEN_WIDTH / 2, 7 * SCREEN_HEIGHT / 8 - vertBuffer, SCREEN_HEIGHT / 8);
-		drawCircle(renderer, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / 8);
-		drawCircle(renderer, 7 * SCREEN_WIDTH / 8, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / 8);
+		drawFilledCircle(renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8 + vertBuffer, SCREEN_HEIGHT / 8);
+		drawFilledCircle(renderer, SCREEN_WIDTH / 2, 7 * SCREEN_HEIGHT / 8 - vertBuffer, SCREEN_HEIGHT / 8);
+		drawFilledCircle(renderer, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / 8);
+		drawFilledCircle(renderer, 7 * SCREEN_WIDTH / 8, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / 8);
+		
 		
 		
 		//draws lines to ensure symmetry
@@ -46,7 +48,10 @@ int main( int argc, char* argv[] ){
 //												SCREEN_WIDTH, (SCREEN_HEIGHT / 2) - (SCREEN_HEIGHT / 8) );
 //		SDL_RenderDrawLine(renderer, 0, (SCREEN_HEIGHT / 2) + (SCREEN_HEIGHT / 8), 
 //												SCREEN_WIDTH, (SCREEN_HEIGHT / 2) + (SCREEN_HEIGHT / 8) );
-//		SDL_RenderPresent( renderer );
+		
+		
+		
+		SDL_RenderPresent(renderer);
 		
 		while( !quit ){
 			while( SDL_PollEvent( &e ) != 0 ){
@@ -59,12 +64,19 @@ int main( int argc, char* argv[] ){
 					switch(e.key.keysym.sym){
 						case SDLK_UP:
 							hexIncr(redVal);
+							SDL_SetRenderDrawColor( renderer, redVal, 0x00, 0x00, 0xFF);
+							drawFilledCircle(renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT / 8 + vertBuffer, 														SCREEN_HEIGHT / 8);
 							break;
 						case SDLK_RIGHT:
 							hexIncr(greenVal);
+							SDL_SetRenderDrawColor( renderer, 0x00, greenVal, 0x00, 0xFF);
+							drawFilledCircle(renderer, 7 * SCREEN_WIDTH / 8, SCREEN_HEIGHT / 2, 
+													SCREEN_HEIGHT / 8);
 							break;
 						case SDLK_LEFT:
 							hexIncr(blueVal);
+							SDL_SetRenderDrawColor( renderer, 0x00, 0x00, blueVal, 0xFF);
+							drawFilledCircle(renderer, SCREEN_WIDTH / 8, SCREEN_HEIGHT / 2, SCREEN_HEIGHT / 8);
 							break;
 						case SDLK_DOWN:
 							redVal = 0x00;
@@ -75,7 +87,7 @@ int main( int argc, char* argv[] ){
 							break;
 					}
 				
-					SDL_SetRenderDrawColor( renderer, redVal, greenVal, blueVal, 0xFF);
+					//SDL_SetRenderDrawColor( renderer, redVal, greenVal, blueVal, 0xFF);
 					drawCircle( renderer, SCREEN_WIDTH / 2, SCREEN_HEIGHT/2, SCREEN_HEIGHT / 8);
 					SDL_RenderPresent( renderer );
 					
@@ -165,6 +177,32 @@ void drawCircle(SDL_Renderer * renderer, int x, int y, int radius){
 	}
 }
 
+void drawFilledCircle(SDL_Renderer * renderer, int x, int y, int radius){
+	int xi = radius;
+	int yi = 0;
+	int error = xi -  1;
+	
+	while(xi >= yi){
+		cout<<"asd"<<endl;
+		SDL_RenderDrawLine(renderer, xi + x, yi + y, 0 - xi + x, 0 - yi + y );
+		SDL_RenderDrawLine(renderer, yi + x, xi + y, 0 - yi + x, 0 - xi + y );
+		SDL_RenderDrawLine(renderer, xi + x, 0 - yi + y, 0 - xi + x, yi + y );
+		SDL_RenderDrawLine(renderer, yi + x, 0 - xi + y, 0 - yi + x, xi + y );
+		//SDL_RenderDrawPoint(renderer, 0 - xi + x, yi + y);
+		//SDL_RenderDrawPoint(renderer, 0 - yi + x, xi + y);
+		//SDL_RenderDrawPoint(renderer, 0 - xi + x, 0 - yi + y);
+		//SDL_RenderDrawPoint(renderer, 0 - yi + x, 0 - xi + y);
+		yi++;
+		
+		if(error < 0){
+			error += 2 * yi + 1;
+		} else {
+			xi--;
+			error += 2 * (yi -xi) + 1;
+		}
+		
+	}
+}
 
 
 
